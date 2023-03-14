@@ -13,7 +13,7 @@ async fn main() {
     // Make sure you have a file named `.env` with the `OPENAI_KEY` environment variable defined!
     dotenv().unwrap();
     let system_prompt =
-        env::var("OPENAI_SYSMSG").expect("system message should be defined in .env");
+        env::var("OPENAI_SYSMSG").unwrap_or("You are a helpful assistant".to_owned());
 
     let mut messages = vec![ChatCompletionMessage {
         role: ChatCompletionMessageRole::System,
@@ -27,6 +27,7 @@ async fn main() {
     skin.italic.set_fgbg(Magenta, rgb(30, 30, 40));
     skin.bullet = StyledChar::from_fg_char(Yellow, '⟡');
     skin.quote_mark.set_fg(Yellow);
+    println!("System Prompt: {}", system_prompt.to_string());
     loop {
         print!("User: ");
         stdout().flush().unwrap();
