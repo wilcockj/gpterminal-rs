@@ -27,7 +27,7 @@ async fn main() {
     skin.italic.set_fgbg(Magenta, rgb(30, 30, 40));
     skin.bullet = StyledChar::from_fg_char(Yellow, '⟡');
     skin.quote_mark.set_fg(Yellow);
-    println!("System Prompt: {}", system_prompt.to_string());
+    println!("System Prompt: {}\n", system_prompt.to_string());
     loop {
         print!("User: ");
         stdout().flush().unwrap();
@@ -41,11 +41,12 @@ async fn main() {
             name: None,
         });
 
+        println!("");
         let chat_completion = ChatCompletion::builder(ModelID::Gpt3_5Turbo, messages.clone())
             .create()
             .await
-            .unwrap()
-            .unwrap();
+            .unwrap_or_default()
+            .unwrap_or_default();
         let returned_message = chat_completion.choices.first().unwrap().message.clone();
 
         let combined_response = format!(
@@ -54,6 +55,7 @@ async fn main() {
             &returned_message.content.trim()
         );
         skin.print_text(&combined_response);
+        println!("");
         messages.push(returned_message);
     }
 }
